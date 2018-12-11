@@ -1,12 +1,12 @@
 ---
 applications:
-- name: file
+- name: torrent
   memory: 1GB
   disk_quota: 2GB
   instances: 1
   random-route: true
   buildpack: java_buildpack
-  path: target/file-0.0.1.RELEASE.jar
+  path: target/torrent-0.0.1.RELEASE.jar
   services:
   - CONFIG_CREDENTIALS
   - EUREKA_CREDENTIALS
