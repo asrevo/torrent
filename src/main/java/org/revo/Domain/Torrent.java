@@ -29,6 +29,7 @@ public class Torrent {
     private int peers;
     @Setter
     private Consumer<Path> onComplete;
+    private boolean fireOnComplete = false;
 
     public Torrent(BtRuntime runtime, BtClientBuilder clientBuilder, Path path, File file) {
         this.file = file;
@@ -49,14 +50,17 @@ public class Torrent {
             peers = state.getConnectedPeers().size();
             determiner(state);
             consumer.accept(state);
-        }, 60000);
+        }, 10000);
     }
 
     private void determiner(TorrentSessionState state) {
         if (state.getPiecesRemaining() == 0) {
             btClient.stop();
             runtime.shutdown();
-            if (this.onComplete != null) this.onComplete.accept(this.path.resolve(name));
+            if (this.onComplete != null && !this.fireOnComplete) {
+                this.fireOnComplete = true;
+                this.onComplete.accept(this.path);
+            }
         }
     }
 }

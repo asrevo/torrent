@@ -28,17 +28,21 @@ public class TorrentServiceImpl implements TorrentService {
     @Override
     public void process(File file) throws IOException {
         Torrent torrent = new Torrent(runtime, clientBuilder, tempFileService.tempDir("torrent"), file);
-        torrent.setOnComplete(path -> {
+        Consumer<Path> walk = path -> {
             try {
                 log.info("walk");
-                Files.walk(path.getParent()).forEach(it -> {
+                Files.walk(path).forEach(it -> {
                     log.info(it.toString());
                 });
             } catch (IOException e) {
 
             }
-        });
+        };
+
+
+        torrent.setOnComplete(walk);
         torrent.start(it -> peak(torrent)).join();
+
     }
 
 
