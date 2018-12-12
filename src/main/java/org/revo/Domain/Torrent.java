@@ -8,9 +8,13 @@ import bt.torrent.TorrentSessionState;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Torrent {
     private File file;
@@ -28,7 +32,7 @@ public class Torrent {
     @Getter
     private int peers;
     @Setter
-    private Consumer<Path> onComplete;
+    private Consumer<List<Path>> onComplete;
     private boolean fireOnComplete = false;
 
     public Torrent(BtRuntime runtime, BtClientBuilder clientBuilder, Path path, File file) {
@@ -59,7 +63,10 @@ public class Torrent {
             runtime.shutdown();
             if (this.onComplete != null && !this.fireOnComplete) {
                 this.fireOnComplete = true;
-                this.onComplete.accept(this.path);
+                try {
+                    this.onComplete.accept(Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList()));
+                } catch (IOException e) {
+                }
             }
         }
     }
