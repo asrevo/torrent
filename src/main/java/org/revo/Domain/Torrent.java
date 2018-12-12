@@ -6,6 +6,7 @@ import bt.runtime.BtClient;
 import bt.runtime.BtRuntime;
 import bt.torrent.TorrentSessionState;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
@@ -15,6 +16,7 @@ public class Torrent {
     private File file;
     private final BtClient btClient;
     private final BtRuntime runtime;
+    private Path path;
     @Getter
     private long start;
     @Getter
@@ -25,10 +27,13 @@ public class Torrent {
     private String name;
     @Getter
     private int peers;
+    @Setter
+    private Consumer<Path> onComplete;
 
     public Torrent(BtRuntime runtime, BtClientBuilder clientBuilder, Path path, File file) {
         this.file = file;
         this.runtime = runtime;
+        this.path = path;
         this.btClient = clientBuilder.storage(new FileSystemStorage(path)).magnet(file.getUrl())
                 .afterTorrentFetched(it -> {
                     size = it.getSize();
@@ -42,15 +47,16 @@ public class Torrent {
         return this.btClient.startAsync(state -> {
             downloaded = state.getDownloaded();
             peers = state.getConnectedPeers().size();
-            determiner();
+            determiner(state);
             consumer.accept(state);
         }, 60000);
     }
 
-    private void determiner() {
-        if (false) {
+    private void determiner(TorrentSessionState state) {
+        if (state.getPiecesRemaining() == 0) {
             btClient.stop();
             runtime.shutdown();
+            if (this.onComplete != null) this.onComplete.accept(this.path.resolve(name));
         }
     }
 }

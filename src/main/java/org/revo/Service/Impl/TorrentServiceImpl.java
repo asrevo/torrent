@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.function.Consumer;
 
 @Service
 @Slf4j
@@ -25,6 +28,16 @@ public class TorrentServiceImpl implements TorrentService {
     @Override
     public void process(File file) throws IOException {
         Torrent torrent = new Torrent(runtime, clientBuilder, tempFileService.tempDir("torrent"), file);
+        torrent.setOnComplete(path -> {
+            try {
+                log.info("walk");
+                Files.walk(path).forEach(it -> {
+                    log.info(it.toString());
+                });
+            } catch (IOException e) {
+
+            }
+        });
         torrent.start(it -> peak(torrent)).join();
     }
 
