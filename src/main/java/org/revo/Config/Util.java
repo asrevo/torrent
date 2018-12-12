@@ -7,10 +7,6 @@ import bt.dht.DHTModule;
 import bt.runtime.BtRuntime;
 import bt.runtime.Config;
 import bt.torrent.selector.SequentialSelector;
-import org.bson.types.ObjectId;
-import org.revo.Domain.File;
-import org.revo.Service.TorrentService;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
