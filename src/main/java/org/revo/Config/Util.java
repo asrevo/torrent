@@ -51,14 +51,4 @@ public class Util {
             }
         });
     }
-
-    @Bean
-    public CommandLineRunner runner(TorrentService torrentService) {
-        return args -> {
-            File file = new File();
-            file.setId(new ObjectId().toString());
-            file.setUrl("magnet:?xt=urn:btih:4ef8f0e293e7785a74dc9daad063d630b6c87726");
-            torrentService.process(file);
-        };
-    }
 }
