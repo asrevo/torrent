@@ -31,7 +31,7 @@ public class TorrentServiceImpl implements TorrentService {
         torrent.setOnComplete(path -> {
             try {
                 log.info("walk");
-                Files.walk(path).forEach(it -> {
+                Files.walk(path.getParent()).forEach(it -> {
                     log.info(it.toString());
                 });
             } catch (IOException e) {
