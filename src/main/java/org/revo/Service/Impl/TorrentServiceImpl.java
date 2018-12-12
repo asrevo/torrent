@@ -2,7 +2,6 @@ package org.revo.Service.Impl;
 
 import bt.BtClientBuilder;
 import bt.runtime.BtRuntime;
-import bt.torrent.TorrentSessionState;
 import lombok.extern.slf4j.Slf4j;
 import org.revo.Domain.File;
 import org.revo.Domain.Torrent;
@@ -26,12 +25,12 @@ public class TorrentServiceImpl implements TorrentService {
     @Override
     public void process(File file) throws IOException {
         Torrent torrent = new Torrent(runtime, clientBuilder, tempFileService.tempDir("torrent"), file);
-        torrent.start(it -> peak(torrent.getStart(), it)).join();
+        torrent.start(it -> peak(torrent)).join();
     }
 
 
-    private static void peak(long start, TorrentSessionState state) {
-        log.info("info " + ((System.currentTimeMillis() - start) / 1000) + "'s  getDownloaded " + state.getDownloaded() + " from " + state.getConnectedPeers().size());
+    private static void peak(Torrent torrent) {
+        log.info("info about " + torrent.getName() + "  " + ((System.currentTimeMillis() - torrent.getStart()) / 1000) + "'s  getDownloaded " + torrent.getDownloaded() + " from " + torrent.getPeers());
     }
 
 }

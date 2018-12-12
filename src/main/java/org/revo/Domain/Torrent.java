@@ -13,7 +13,6 @@ import java.util.function.Consumer;
 
 public class Torrent {
     private File file;
-    @Getter
     private final BtClient btClient;
     private final BtRuntime runtime;
     @Getter
@@ -24,6 +23,8 @@ public class Torrent {
     private long downloaded;
     @Getter
     private String name;
+    @Getter
+    private int peers;
 
     public Torrent(BtRuntime runtime, BtClientBuilder clientBuilder, Path path, File file) {
         this.file = file;
@@ -40,6 +41,7 @@ public class Torrent {
         start = System.currentTimeMillis();
         return this.btClient.startAsync(state -> {
             downloaded = state.getDownloaded();
+            peers = state.getConnectedPeers().size();
             determiner();
             consumer.accept(state);
         }, 60000);
