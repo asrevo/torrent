@@ -1,13 +1,13 @@
 package org.revo.Service.Impl;
 
 import bt.BtClientBuilder;
+import bt.data.file.FileSystemStorage;
 import bt.runtime.BtClient;
 import bt.runtime.BtRuntime;
 import bt.torrent.TorrentSessionState;
 import lombok.extern.slf4j.Slf4j;
 import org.revo.Domain.File;
 import org.revo.Service.TorrentService;
-import org.revo.Util.FileSystemStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
