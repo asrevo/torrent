@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Torrent {
-    private File file;
     private final BtClient btClient;
     private final BtRuntime runtime;
     private Path path;
@@ -36,7 +35,6 @@ public class Torrent {
     private boolean fireOnComplete = false;
 
     public Torrent(BtRuntime runtime, BtClientBuilder clientBuilder, Path path, File file) {
-        this.file = file;
         this.runtime = runtime;
         this.path = path;
         this.btClient = clientBuilder.storage(new FileSystemStorage(path)).magnet(file.getUrl())

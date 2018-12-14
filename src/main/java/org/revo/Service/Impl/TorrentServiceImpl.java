@@ -27,7 +27,8 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Override
     public void process(File file) throws IOException {
-        Torrent torrent = new Torrent(runtime, clientBuilder, tempFileService.tempDir("torrent"), file);
+        Path basePath = tempFileService.tempDir("torrent");
+        Torrent torrent = new Torrent(runtime, clientBuilder, basePath, file);
         Consumer<List<Path>> walk = paths -> {
             log.info("walk");
             for (Path path : paths) {
